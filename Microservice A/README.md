@@ -34,7 +34,7 @@ Microservice A Group 50
 	
 	
 
-	[![Image](https://github.com/user-attachments/assets/0e63f105-f98f-4b63-8281-afcb767dfdd3)](https://raw.githubusercontent.com/Linkinthesink/362---Main/b3b6cec818e190c355df6412c1b985457e181002/Microservice%20A/FileService.svg?token=AYXU7Q6LRCLT45C4FQJDMODIFQ7ES)
+	[![Image](https://github.com/user-attachments/assets/0e63f105-f98f-4b63-8281-afcb767dfdd3)](https://raw.githubusercontent.com/Linkinthesink/362---Main/b3b6cec818e190c355df6412c1b985457e181002/Microservice%20A/FileService.svg
 
 
 

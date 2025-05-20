@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Test Webpage</title>
+    <script>
+        async function getItems(){
+            console.log("function called");
+            const list = document.getElementById('itemList');
+            fetch('http://127.0.0.1:5000/getall')
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error(`Failed to get items: ${response.status}`);
+                    }
+                    return response.json(); 
+                })
+                .then(data => {
+                    console.log(data);
+ 
+                    data.forEach(item => {
+                        const row = list.insertRow();
+                        const name = row.insertCell();
+                        const desc = row.insertCell();
+                        name.textContent = item.Filename;
+                        desc.textContent = item.Description;
+                        
+                        button = row.insertCell().textContent = "placeholder";
+                        var lastRow = row;
+                        var lastCell = lastRow.cells[lastRow.cells.length -1]
+                        lastCell.innerHTML = "<button id= 'getItemBtn'; onclick = 'getItem(this)';> Get Item </button>"
+
+                        console.log(item.Filename); 
+                    });
+                })
+                .catch(error => {
+                    console.error('Get error', error);
+                });
+        }
+
+    </script>
+        <script>
+            async function getItem(callButton){
+                console.log("getItem function called");
+                const displayDiv = document.getElementById("displayDiv")
+                const row = callButton.parentElement.parentElement
+                console.log(callButton)
+                Filename = row.cells[0].textContent
+                console.log(Filename)
+                console.log(`http://127.0.0.1:5000/getone?Filename=${Filename}`)
+                window.location.replace(`http://127.0.0.1:5000/getone?Filename=${Filename}`)
+            }
+        </script>
+  </head>
+
+  <body>
+    <button onclick = "getItems()"> click for item list </button>
+  </body>
+  <table id = "itemList" style="border: 3px solid;border-collapse: separate;border-spacing: 10px 10px;">
+  </table>
+</html>

@@ -5,30 +5,11 @@ import json
 app = Flask(__name__)
 
 load_dotenv()
-
-workingDirectory = os.getcwd() + os.environ.get("FileDirectory")
+workingDirectory = os.path.join(os.getcwd(), os.environ.get("FileDirectory"))
 descriptionFile = os.environ.get("DescriptionFile")
 
 fileCache = None #Use static descriptions filled here or load them from a json
-fileList = os.listdir(workingDirectory) #keep track of files to update if a new one is added
-
-@app.route('/getall')
-def get_all():
-    updatecache()
-    return get_all_files()
-@app.route('/getone')
-def get_one():
-    updatecache()
-    fileName = request.args.get('Filename')
-    print(fileName)
-    if fileName:
-        return get_file_by_name(fileName)
-    else:
-        return "404"
-
-if __name__ == '__main__':
-    app.run()
-
+fileList = os.listdir(workingDirectory)
 
 def get_all_files():
     """
@@ -46,11 +27,11 @@ def get_all_files():
         filePair = None
         for item in fileCache:
             if file == item.get('Filename'):
-                #serch through the chache array if it finds a description for the file append that to the fileArr
+                #serch through the cache array for descriptions
                 filePair = {'Filename': file, 'Description': item.get('Description')}
                 break
         if filePair == None:
-            #default behavior, if it fails to find a description it instead just uses the file's name
+            #defaults to filename if no description
             filePair = {'Filename': file, 'Description': str(file)[:-4]}
 
         fileArr.append(filePair)
@@ -63,7 +44,7 @@ def get_file_by_name(filename):
     :param filename: string name of the file
     :return: response code 200 if found 404 otherwise
     """
-    returnFile = workingDirectory + "\\" + filename
+    returnFile = os.path.join(workingDirectory, filename)
     try:
         #send the file to the user
         returnVal = send_file(returnFile)
@@ -87,8 +68,27 @@ def updatecache():
         print("updating cache")
         fileList = os.listdir(workingDirectory)
     if fileCache is None:
-        #reads the descriptions for the file form the "descriptionFile" variable this can be configured in the .env file
+        #reads the descriptions for the file form the descriptionFile
         with open(descriptionFile, "r") as file:
             fileCache = json.load(file)
 
     return
+
+@app.route('/getall')
+def get_all():
+    updatecache()
+    return get_all_files()
+    
+@app.route('/getone')
+def get_one():
+    updatecache()
+    fileName = request.args.get('Filename')
+    print(fileName)
+    if fileName:
+        return get_file_by_name(fileName)
+    else:
+        return "404"
+
+if __name__ == '__main__':
+    app.run()
+

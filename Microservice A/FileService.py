@@ -1,8 +1,13 @@
 from flask import Flask, send_file, request
+from flask_cors import CORS, cross_origin
 import os
 from dotenv import load_dotenv
 import json
 app = Flask(__name__)
+CORS(app)
+
+app.config['CORS_ORIGINS'] = '127.0.0.1:5000' #configure as needed 
+app.config['CORS_METHODS'] = ['GET']
 
 load_dotenv()
 workingDirectory = os.path.join(os.getcwd(), os.environ.get("FileDirectory"))
@@ -75,11 +80,13 @@ def updatecache():
     return
 
 @app.route('/getall')
+@cross_origin(origin='*', methods=['GET'])
 def get_all():
     updatecache()
     return get_all_files()
-    
+
 @app.route('/getone')
+@cross_origin(origin='*', methods=['GET'])
 def get_one():
     updatecache()
     fileName = request.args.get('Filename')
@@ -88,6 +95,7 @@ def get_one():
         return get_file_by_name(fileName)
     else:
         return "404"
+
 
 if __name__ == '__main__':
     app.run()

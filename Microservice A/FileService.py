@@ -2,7 +2,10 @@ from flask import Flask, send_file, request
 import os
 from dotenv import load_dotenv
 import json
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)
 
 load_dotenv()
 
@@ -11,24 +14,6 @@ descriptionFile = os.environ.get("DescriptionFile")
 
 fileCache = None #Use static descriptions filled here or load them from a json
 fileList = os.listdir(workingDirectory) #keep track of files to update if a new one is added
-
-@app.route('/getall')
-def get_all():
-    updatecache()
-    return get_all_files()
-@app.route('/getone')
-def get_one():
-    updatecache()
-    fileName = request.args.get('Filename')
-    print(fileName)
-    if fileName:
-        return get_file_by_name(fileName)
-    else:
-        return "404"
-
-if __name__ == '__main__':
-    app.run()
-
 
 def get_all_files():
     """
@@ -92,3 +77,20 @@ def updatecache():
             fileCache = json.load(file)
 
     return
+
+@app.route('/getall')
+def get_all():
+    updatecache()
+    return get_all_files()
+@app.route('/getone')
+def get_one():
+    updatecache()
+    fileName = request.args.get('Filename')
+    print(fileName)
+    if fileName:
+        return get_file_by_name(fileName)
+    else:
+        return "404"
+
+if __name__ == '__main__':
+    app.run()
